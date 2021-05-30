@@ -7,13 +7,13 @@ function extractPositions() {
 }
 
 var promises = [
-    fetch("/nodes.json").then((response) => response.json()),
-    fetch("/edges.json").then((response) => response.json()),
-    fetch("/positions.json").then((response) => response.json()),
+    fetch("nodes.json").then((response) => response.json()),
+    fetch("edges.json").then((response) => response.json()),
+    fetch("positions.json").then((response) => response.json()),
 ];
 Promise.all(promises).then(([nodesData, edgesData, positions]) => {
     var container = document.getElementById("mynetwork");
-    var nodesDataWithPos = nodesData.map((node) => ({ ...node, ...positions[node.id.toString()] }));
+    var nodesDataWithPos = nodesData.map((node) => ({ ...node, ...positions[node.id.toString()]}));
     var nodes = new vis.DataSet(nodesDataWithPos);
     var edges = new vis.DataSet(edgesData);
     var data = { nodes, edges };
@@ -21,12 +21,12 @@ Promise.all(promises).then(([nodesData, edgesData, positions]) => {
         layout: {
             randomSeed: undefined,
             improvedLayout: false,
-            clusterThreshold: 150,
+            clusterThreshold: 2000,
             hierarchical: {
-                enabled: true,
-                levelSeparation: 200,
-                nodeSpacing: 200,
-                treeSpacing: 250,
+                enabled: false,
+                levelSeparation: 1500,
+                nodeSpacing: 400,
+                treeSpacing: 1000,
                 blockShifting: true,
                 edgeMinimization: true,
                 parentCentralization: false,
@@ -34,6 +34,29 @@ Promise.all(promises).then(([nodesData, edgesData, positions]) => {
                 sortMethod: "directed", // hubsize, directed
             },
         },
+	      edges:{
+
+	        arrows: {
+      to: {
+        enabled: true,
+        scaleFactor: 1,
+        type: "arrow"
+      },
+      middle: {
+        enabled: false,
+        imageHeight: 32,
+        imageWidth: 32,
+        scaleFactor: 1,
+        src: "https://visjs.org/images/visjs_logo.png",
+        type: "image"
+      },
+      from: {
+        enabled: false,
+        scaleFactor: 1,
+        type: "arrow"
+      }
+    },
+	      },
         physics: {
             enabled: true,
             barnesHut: {
@@ -57,7 +80,7 @@ Promise.all(promises).then(([nodesData, edgesData, positions]) => {
             repulsion: {
                 centralGravity: 0.2,
                 springLength: 200,
-                springConstant: 0.05,
+                springConstant: 5,
                 nodeDistance: 100,
                 damping: 0.09,
             },
